@@ -2,7 +2,6 @@ package org.g_29.trexpensebackend.Config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 
@@ -16,7 +15,7 @@ public class JwtProvider {
     public static String generateToken(Authentication authentication) {
         String jwt = Jwts.builder().setIssuedAt(new Date()).setExpiration(new Date(new Date().getTime()+86400000))
                 .claim("email",authentication.getName())
-                .signWith(key, SignatureAlgorithm.HS256).compact();
+                .signWith(key).compact();
 
         return jwt;
     }

@@ -63,20 +63,22 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.12.6</version>
         </dependency>
 
-
-
-        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if you're using Gson -->
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
