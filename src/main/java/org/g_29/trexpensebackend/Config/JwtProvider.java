@@ -10,11 +10,12 @@ import java.util.Date;
 
 public class JwtProvider {
 
-    private static SecretKey key= Keys.hmacShaKeyFor(JwtConstants.SECRET_KEY.getBytes());
+     static SecretKey key= Keys.hmacShaKeyFor(JwtConstants.SECRET_KEY.getBytes());
 
     public static String generateToken(Authentication authentication) {
         String jwt = Jwts.builder().setIssuedAt(new Date()).setExpiration(new Date(new Date().getTime()+86400000))
                 .claim("email",authentication.getName())
+                .claim("authorities", authentication.getAuthorities().toString())
                 .signWith(key).compact();
 
         return jwt;

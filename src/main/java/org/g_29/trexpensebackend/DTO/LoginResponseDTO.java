@@ -3,12 +3,15 @@ package org.g_29.trexpensebackend.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDTO {
+public class LoginResponseDTO {
 
     private String email;
-    private String password;
+    private String message;
+    private HttpStatus statusCode;
+    private String jwt;
 }

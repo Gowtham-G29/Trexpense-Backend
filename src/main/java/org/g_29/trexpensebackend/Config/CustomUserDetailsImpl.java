@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerDetailsImpl implements UserDetailsService {
+public class CustomUserDetailsImpl implements UserDetailsService {
 
     @Autowired
     private CustomerRepo customerRepo;

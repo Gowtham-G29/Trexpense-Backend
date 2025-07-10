@@ -24,9 +24,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String jwt=request.getHeader(JwtConstants.HEADER_STRING);
-        if(jwt!=null&&jwt.startsWith("Bearer ")){
+        System.out.println("jwt:"+jwt);
+        if(jwt!=null){
             jwt=jwt.substring(7).trim();
-
+            System.out.println("jwt:"+jwt);
             try {
                 if(jwt.contains(" ")){
                     throw new BadCredentialsException("Invalid JWT token");
@@ -46,7 +47,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (RuntimeException e) {
-                throw new BadCredentialsException("Invalid JWT token");
+                throw new BadCredentialsException("Invalid JWT token 1");
             }
         }
 

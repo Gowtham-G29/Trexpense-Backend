@@ -6,4 +6,5 @@ public interface CustomerService {
 
     public Customer findByEmail(String email);
     public Customer createCustomer(Customer newCustomer);
+    public Customer getUserProfileByJWT(String jwt);
 }
