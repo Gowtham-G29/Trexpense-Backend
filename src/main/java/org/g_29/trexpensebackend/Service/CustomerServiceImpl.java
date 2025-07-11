@@ -26,7 +26,6 @@ public class CustomerServiceImpl implements  CustomerService {
     public Customer getUserProfileByJWT(String jwt) {
 
         String email= JwtProvider.getEmailFromToken(jwt);
-        System.out.println("email:"+email);
 
         return customerRepo.findByEmail(email);
     }

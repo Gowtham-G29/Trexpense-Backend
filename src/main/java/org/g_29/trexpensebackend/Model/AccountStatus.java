@@ -22,4 +22,7 @@ public class AccountStatus {
 
     private Boolean status;
 
+    @OneToOne(mappedBy = "accountStatus",cascade = CascadeType.ALL,orphanRemoval = true)
+    private Customer customer;
+
 }

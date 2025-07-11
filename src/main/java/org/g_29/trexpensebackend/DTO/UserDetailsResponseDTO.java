@@ -11,5 +11,6 @@ public class UserDetailsResponseDTO {
 
     private String name;
     private String email;
+    private Boolean isActive;
 
 }

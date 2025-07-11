@@ -18,8 +18,6 @@ public class EmailServiceImpl implements EmailService{
          MimeMessage mimeMessage = javaMailSender.createMimeMessage();
          MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"UTF-8");
 
-         System.out.println("Hii"+email);
-
         String subject = "Thank You for Visiting Trexpense!";
         String text = "<!DOCTYPE html>" +
                 "<html>" +

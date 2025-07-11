@@ -3,7 +3,9 @@ package org.g_29.trexpensebackend.Controller;
 import org.g_29.trexpensebackend.Config.CustomUserDetailsImpl;
 import org.g_29.trexpensebackend.Config.JwtProvider;
 import org.g_29.trexpensebackend.DTO.*;
+import org.g_29.trexpensebackend.Model.AccountStatus;
 import org.g_29.trexpensebackend.Model.Customer;
+import org.g_29.trexpensebackend.Repository.CustomerRepo;
 import org.g_29.trexpensebackend.Service.CustomerServiceImpl;
 import org.g_29.trexpensebackend.Service.SendEmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class AuthController {
 
     @Autowired
     private SendEmailServiceImpl sendEmailServiceImpl;
+    @Autowired
+    private CustomerRepo customerRepo;
 
     public AuthController(CustomerServiceImpl customerServiceImpl, PasswordEncoder passwordEncoder, CustomUserDetailsImpl customUserDetails) {
         this.customerServiceImpl = customerServiceImpl;
@@ -59,6 +63,10 @@ public class AuthController {
         newCustomer.setName(createCustomerDTO.getName());
         newCustomer.setEmail(createCustomerDTO.getEmail());
         newCustomer.setPassword(passwordEncoder.encode(createCustomerDTO.getPassword()));
+
+//        AccountStatus newAccountStatus=new AccountStatus();
+//        newAccountStatus.setStatus(false);
+//        newCustomer.setAccountStatus(newAccountStatus);
 
         Customer createdNewCustomer=customerServiceImpl.createCustomer(newCustomer);
 
@@ -102,7 +110,6 @@ public class AuthController {
         String password=loginRequestDTO.getPassword();
 
         Authentication authentication=authenticate(email,password);
-        System.out.println(authentication.getPrincipal().toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt=JwtProvider.generateToken(authentication);
@@ -142,18 +149,18 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDTO);
         }
 
+
         UserDetailsResponseDTO userDetailsResponseDTO=new UserDetailsResponseDTO();
         userDetailsResponseDTO.setEmail(customer.getEmail());
         userDetailsResponseDTO.setName(customer.getName());
+        userDetailsResponseDTO.setIsActive(customer.getAccountStatus().getStatus());
 
         return ResponseEntity.status(HttpStatus.OK).body(userDetailsResponseDTO);
 
     }
 
     @PostMapping("/activateAccount")
-    public ResponseEntity<?>activateAccount(@RequestHeader("Authorization") String token, @RequestParam String email) throws Exception {
-
-        System.out.println(email);
+    public ResponseEntity<?>sendAccountActivationMail(@RequestHeader("Authorization") String token, @RequestParam String email) throws Exception {
 
 
         Customer customer=customerServiceImpl.getUserProfileByJWT(token);
@@ -166,7 +173,32 @@ public class AuthController {
 
         sendEmailServiceImpl.sendEmailWithToken(email);
 
-        return ResponseEntity.status(HttpStatus.OK).body("User Activated Successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("User Activation mail sent successfully");
+
+    }
+
+
+    @PostMapping("/confirmActivation")
+    public ResponseEntity<?>confirmAccountActivation(@RequestHeader("Authorization") String jwt,@RequestParam String activationToken) throws Exception {
+        Customer customer=customerServiceImpl.getUserProfileByJWT(jwt);
+        String email=customer.getEmail();
+
+        String originalToken=sendEmailServiceImpl.getTokenByUserEmail(email);
+
+        if(originalToken.equals(activationToken)){
+            AccountStatus accountStatus=sendEmailServiceImpl.acceptActivation(email);
+            accountStatus.setStatus(true);
+            customer.setAccountStatus(accountStatus);
+            customerRepo.save(customer);
+            sendEmailServiceImpl.deleteToken(activationToken);
+            return ResponseEntity.status(HttpStatus.OK).body("User Activated Successfully");
+        }
+        else{
+            ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+            errorResponseDTO.setErrorMessage("Invalid Activation Token");
+            errorResponseDTO.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
+        }
 
     }
 

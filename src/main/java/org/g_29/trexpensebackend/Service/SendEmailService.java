@@ -6,7 +6,7 @@ public interface SendEmailService {
 
     void sendEmailWithToken(String email) throws Exception;
 
-    AccountStatus acceptInvitation(String email, String token) throws Exception;
+    AccountStatus acceptActivation(String email) throws Exception;
 
     String getTokenByUserEmail(String email) throws Exception;
 
