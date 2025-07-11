@@ -7,6 +7,7 @@ import org.g_29.trexpensebackend.Model.AccountStatus;
 import org.g_29.trexpensebackend.Model.Customer;
 import org.g_29.trexpensebackend.Repository.CustomerRepo;
 import org.g_29.trexpensebackend.Service.CustomerServiceImpl;
+import org.g_29.trexpensebackend.Service.PasswordResetEmailServiceImpl;
 import org.g_29.trexpensebackend.Service.SendEmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,8 @@ public class AuthController {
     private SendEmailServiceImpl sendEmailServiceImpl;
     @Autowired
     private CustomerRepo customerRepo;
+    @Autowired
+    private PasswordResetEmailServiceImpl passwordResetEmailServiceImpl;
 
     public AuthController(CustomerServiceImpl customerServiceImpl, PasswordEncoder passwordEncoder, CustomUserDetailsImpl customUserDetails) {
         this.customerServiceImpl = customerServiceImpl;
@@ -64,9 +67,6 @@ public class AuthController {
         newCustomer.setEmail(createCustomerDTO.getEmail());
         newCustomer.setPassword(passwordEncoder.encode(createCustomerDTO.getPassword()));
 
-//        AccountStatus newAccountStatus=new AccountStatus();
-//        newAccountStatus.setStatus(false);
-//        newCustomer.setAccountStatus(newAccountStatus);
 
         Customer createdNewCustomer=customerServiceImpl.createCustomer(newCustomer);
 
@@ -200,6 +200,34 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
         }
 
+    }
+
+
+    @PostMapping("/sentPasswordResetEmail")
+    public ResponseEntity<?>sendPasswordResetEmail(@RequestParam String email) throws Exception {
+        Customer customer=customerServiceImpl.findByEmail(email);
+        if(customer==null){
+            ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+            errorResponseDTO.setErrorMessage("Invalid User");
+            errorResponseDTO.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
+        }
+        passwordResetEmailServiceImpl.sendMail(email);
+        return ResponseEntity.status(HttpStatus.OK).body("Password Reset Mail sent successfully");
+
+    }
+
+    @PatchMapping("/resetPassword")
+    public ResponseEntity<?>resetPassword(@RequestParam String email, @RequestParam String newPassword,@RequestParam String resetToken) throws Exception {
+        Customer customer=customerServiceImpl.findByEmail(email);
+        if(customer==null){
+            ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+            errorResponseDTO.setErrorMessage("Invalid User ");
+            errorResponseDTO.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
+        }
+        passwordResetEmailServiceImpl.validateTokenAndReset(email,resetToken,newPassword);
+        return ResponseEntity.status(HttpStatus.OK).body("Password Reset successfully");
     }
 
 
