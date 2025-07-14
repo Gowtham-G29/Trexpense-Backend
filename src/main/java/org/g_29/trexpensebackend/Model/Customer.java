@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -34,6 +35,9 @@ public class Customer {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expenses> expenses;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
