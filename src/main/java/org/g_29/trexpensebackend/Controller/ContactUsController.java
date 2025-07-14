@@ -1,6 +1,6 @@
 package org.g_29.trexpensebackend.Controller;
 
-import org.g_29.trexpensebackend.Model.ContactUsMailRequestDTO;
+import org.g_29.trexpensebackend.DTO.ContactUsMailRequestDTO;
 import org.g_29.trexpensebackend.Service.ContactUsEmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

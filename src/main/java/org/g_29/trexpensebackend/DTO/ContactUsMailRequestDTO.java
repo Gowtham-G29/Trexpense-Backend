@@ -1,4 +1,4 @@
-package org.g_29.trexpensebackend.Model;
+package org.g_29.trexpensebackend.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
