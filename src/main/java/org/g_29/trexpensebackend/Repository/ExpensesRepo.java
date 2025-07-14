@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface ExpensesRepo extends JpaRepository<Expenses, Long> {
 
-    List<Expenses> findExpensesByCustomer_Id(Long userId);
+    List<Expenses> findByCustomer_IdOrderByCreatedAtDesc(Long userId);
+
 
 }

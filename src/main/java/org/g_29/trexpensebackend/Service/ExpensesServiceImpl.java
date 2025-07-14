@@ -21,7 +21,14 @@ public class ExpensesServiceImpl implements ExpensesService {
     @Transactional
     public List<Expenses> getExpenses(Long userId)throws Exception {
 
-        return expensesRepo.findExpensesByCustomer_Id(userId);
+        return expensesRepo.findByCustomer_IdOrderByCreatedAtDesc(userId);
+
+    }
+
+    @Override
+    public void deleteExpenses(Long expenseId) throws Exception {
+
+        expensesRepo.deleteById(expenseId);
 
     }
 

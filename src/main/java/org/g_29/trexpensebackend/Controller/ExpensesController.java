@@ -76,4 +76,20 @@ public class ExpensesController {
 
         return ResponseEntity.status(HttpStatus.OK).body(expenses);
     }
+
+    @DeleteMapping("/deleteExpense")
+    public ResponseEntity<?> deleteExpense(@RequestHeader("Authorization") String jwt , @RequestParam Long expenseId) throws Exception{
+        Customer customer = customerServiceImpl.getUserProfileByJWT(jwt);
+
+        if(customer == null){
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO();
+            errorResponse.setErrorMessage("Invalid User");
+            errorResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+         expensesServiceImpl.deleteExpenses(expenseId);
+          return ResponseEntity.status(HttpStatus.OK).body("Expenses Deleted");
+
+    }
 }

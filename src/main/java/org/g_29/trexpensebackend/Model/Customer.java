@@ -32,6 +32,9 @@ public class Customer {
 
     private String passwordResetToken;
 
+    @Lob
+    private byte[] profilePicture;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
