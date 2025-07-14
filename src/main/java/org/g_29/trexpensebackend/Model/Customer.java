@@ -1,5 +1,6 @@
 package org.g_29.trexpensebackend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class Customer {
     @Lob
     private byte[] profilePicture;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account_status_id")
     private AccountStatus accountStatus;
